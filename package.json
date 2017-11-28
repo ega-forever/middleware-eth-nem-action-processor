@@ -1,0 +1,39 @@
+{
+  "name": "middleware-eth-nem-action-processor",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node ./node_modules/eslint/bin/eslint.js -c .eslintrc.js --ext .js --fix --ignore-path .eslintignore .",
+    "test": "node ./node_modules/mocha/bin/mocha -t 90000 tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/algebris/middleware-eth-nem-action-processor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/algebris/middleware-eth-nem-action-processor/issues"
+  },
+  "homepage": "https://github.com/algebris/middleware-eth-nem-action-processor#readme",
+  "dependencies": {
+    "bignumber.js": "^4.1.0",
+    "bunyan": "^1.8.12",
+    "chronobank-smart-contracts": "1.1.42",
+    "dotenv": "^4.0.0",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.13.4",
+    "mongoose-long": "^0.1.1",
+    "nem-sdk": "^1.5.1",
+    "web3": "^0.19.0",
+    "amqplib": "^0.5.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "eslint-plugin-chronobank": "github:chronobank/eslint-plugin-chronobank",
+    "chai": "^4.1.2",
+    "eslint": "^4.11.0",
+    "mocha": "^4.0.1"
+  }
+}
