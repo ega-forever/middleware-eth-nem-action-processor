@@ -1,60 +1,48 @@
 const accountModel = require('../models/accountModel'),
-    fs = require('fs'),
-    net = require('net'),
-    Web3 = require('web3'),
-    path = require('path'),
-    config = require('../config'),
-    requireAll = require('require-all'),
-    contract = require('truffle-contract'),
-    mongoose = require('mongoose');
+  nemServices = require('./nemServices'),
+  _ = require('lodash'),
+  net = require('net'),
+  Web3 = require('web3'),
+  path = require('path'),
+  config = require('../config'),
+  contract = require('truffle-contract');
 
-let contracts = {},
-    contractsPath = path.join(__dirname, '../node_modules', 'chronobank-smart-contracts/build/contracts');
+const provider = new Web3.providers.IpcProvider(config.web3.uri, net),
+  contractsPath = path.join(__dirname, '../node_modules', 'chronobank-smart-contracts/build/contracts');
 
-if (fs.existsSync(contractsPath)) {
-  //scan dir for all smartContracts, excluding emitters (except ChronoBankPlatformEmitter) and interfaces
-  contracts = requireAll({
-    dirname: contractsPath,
-    filter: /(^((ChronoBankPlatformEmitter)|(?!(Emitter|Interface)).)*)\.json$/,
-    resolve: Contract => contract(Contract)
-  });
-}
+// Contracts loader
+const loadContracts = (contractPath, provider, contracts) => 
+  _.chain(contracts)
+    .transform((acc, name) => {
+      const contr = require(path.join(contractsPath, `${name}.json`));
+      acc[name] = contract(contr);
+      acc[name].setProvider(provider);
+    }, {})
+    .value();
 
-let provider = new Web3.providers.IpcProvider(config.web3.uri, net);
-const web3 = new Web3();
+// Load & init required contracts by truffle
+const contracts = loadContracts(contractsPath, provider, ['ERC20Interface', 'ERC20Manager']),
+  updateTimeBalance = (address, balance) =>
+    accountModel.findOneAndUpdate({ address: address }, {$set: { maxTimeBalance:balance }}, { upsert: true }),
+  checkNEMBalance = () => {};
+    
+module.exports.checkCredit = async recipient => {
+  // Obtain required settings from network
+  const erc = await contracts.ERC20Manager.deployed(), // Get the instance of contract
+    token = await erc.getTokenAddressBySymbol('TIME'), // Get address of token by symbol
+    time = await contracts.ERC20Interface.at(token), // get instance of 
+    balance = await time.balanceOf(recipient), // obtain balance of time for recipient BigNumber
+    user = (await accountModel.findOne({ address: recipient })).toObject(), // load recipient's record from DB
+    maxTimeBalance = _.get(user, 'maxTimeBalance', 0), // get maxTimeBalance from record
+    nemAddress = _.get(user, 'connected.nem'); // get NEM address from record
 
-web3.setProvider(provider);
-
-web3.currentProvider.connection.on('end', () => {
-  log.error('ipc process has finished!');
-  process.exit(0);
-});
-
-web3.currentProvider.connection.on('error', () => {
-  log.error('ipc process has finished!');
-  process.exit(0);
-});
-
-module.exports.checkCredit = async (name, who, amount) => {
-  contracts.ERC20Manager.setProvider(provider);
-
-  let token = await contracts.ERC20Manager.deployed()
-    .catch(err => console.error(err));
-  
-  console.log(token);
-  // let zz = await token.getTokenAddressBySymbol("TIME");
-  // console.log(zz);
-
-  // const user = await accountModel.findOne({address: who});
+  // console.log(maxTimeBalance, balance.greaterThan(maxTimeBalance), balance.minus(maxTimeBalance).valueOf(), balance);
+  if(balance.greaterThan(maxTimeBalance) && nemAddress) {
+    checkNEMBalance();
+    const transferAmount = Math.round(balance.minus(maxTimeBalance).valueOf() / 100000000) * config.nem.bonusRate;
+    // console.log('transferAmount: ', balance.minus(maxTimeBalance).valueOf());
+    await nemServices.makeBonusTransfer(nemAddress, transferAmount);
+    // console.log(transferResult);
+    await updateTimeBalance(recipient, balance);
+  }
 };
-
-
-// const nemapi = require('nem-api'),
-//     san = new nemapi('http://localhost:7890');
-
-// const doSmth = () => {
-//     san.post('/account/get', {address:'TBJIC6LRNUVXQSVPO3VZSH3MUYNP3IO4OQTI5IFD'}, resp => {
-//         console.log(resp.body);
-//     });
-
-// };

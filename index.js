@@ -9,15 +9,14 @@
  */
 
 const config = require('./config'),
+  _ = require('lodash'),
   mongoose = require('mongoose'),
-  accountModel = require('./models/accountModel'),
   makeTransfer = require('./services/makeTransfer'),
   Web3 = require('web3'),
   net = require('net'),
   bunyan = require('bunyan'),
   Promise = require('bluebird'),
   log = bunyan.createLogger({name: 'core.nemActionProcessor'}),
-  contract = require('truffle-contract'),
   amqp = require('amqplib');
 
 mongoose.Promise = Promise;
@@ -57,31 +56,17 @@ let init = async () => {
   await channel.assertExchange('events', 'topic', {durable: false});
   await channel.assertQueue(defaultQueue);
   await channel.bindQueue(defaultQueue, 'events', `${config.rabbit.serviceName}_chrono_sc.*`);
+  
   channel.prefetch(2);
-
-// let event={event:1, payload:{who:1, amount:1}};
-// const balance = await makeTransfer.checkCredit(event.name, event.payload.who, event.payload.amount);
-// const erc20 = require('./node_modules/chronobank-smart-contracts/build/contracts/ERC20Manager.json');
-
-// let Erc20Contract = contract(erc20);
-
-// Erc20Contract.setProvider(provider);
-// console.log(Erc20Contract);
-
-// Erc20Contract.deployed()
-  // .then(ins => {
-    // console.log(ins);
-  // })
-  // .catch(err => console.log(err));
 
   channel.consume(defaultQueue, async (data) => {
     try {
       let event = JSON.parse(data.content.toString());
-      
+
       if(triggerEvents.indexOf(event.name) !== -1) {
-        const balance = await makeTransfer.checkCredit(event.name, event.payload.who, event.payload.amount);
-      }
-      
+        const who = _.get(event, 'payload.who');
+        await makeTransfer.checkCredit(who);
+      }      
     } catch (e) {
       log.error(e);
     }

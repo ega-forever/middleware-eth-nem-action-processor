@@ -22,7 +22,16 @@ const config = {
     network: process.env.NETWORK || 'development',
     uri: `${/^win/.test(process.platform) ? '\\\\.\\pipe\\' : ''}${process.env.WEB3_URI || `/tmp/${(process.env.NETWORK || 'development')}/geth.ipc`}`
   },
-  nem: {}
+  nem: {
+    mosaic: 'cb:minutes',
+    txFee: 100000,
+    bonusRate: 60,
+    host: 'http://localhost',
+    privateKey: 'secret_key',
+  },
+  sc: {
+    path: 'defaultPath' // TODO: ...
+  }
 };
 
 module.exports = config;
