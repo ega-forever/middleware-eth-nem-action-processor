@@ -20,7 +20,14 @@ const Account = new mongoose.Schema({
   balance: {type: mongoose.Schema.Types.Long, default: 0},
   created: {type: Date, required: true, default: Date.now},
   erc20token : {type: mongoose.Schema.Types.Mixed, default: {}},
-  maxTimeBalance: {type: mongoose.Schema.Types.Long, default: 0}
+  nem: {
+    type: String,
+    unique: true,
+    required: true,
+    validate: [a=>  /^[0-9A-Z]{40}$/.test(a), messages.wrongAddress]
+  },
+  maxTimeBalance: {type: mongoose.Schema.Types.Long, default: 0},
+  welcomeBonusSent: {type: Boolean, default: false}
 });
 
 module.exports = mongoose.model('EthAccount', Account);

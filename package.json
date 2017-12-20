@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/algebris/middleware-eth-nem-action-processor#readme",
   "dependencies": {
+    "amqplib": "^0.5.2",
     "bignumber.js": "^4.1.0",
     "bunyan": "^1.8.12",
     "chronobank-smart-contracts": "1.1.42",
@@ -26,8 +27,8 @@
     "mongoose": "^4.13.4",
     "mongoose-long": "^0.1.1",
     "nem-sdk": "^1.5.1",
-    "web3": "^0.19.0",
-    "amqplib": "^0.5.2"
+    "require-all": "^2.2.0",
+    "web3": "^0.19.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
