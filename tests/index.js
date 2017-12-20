@@ -13,14 +13,11 @@ const config = require('../config'),
 
 describe('core/sc processor', function () {
 
-  before(async () => {
-
-  });
+  before(async () => {});
 
   after(() => {});
 
-  it('check NEM balance', async () => {
-  });
+  it('check NEM balance', async () => {});
 
 });
 
