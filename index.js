@@ -11,7 +11,7 @@
 const config = require('./config'),
   _ = require('lodash'),
   mongoose = require('mongoose'),
-  makeTransfer = require('./services/makeTransfer'),
+  runActions = require('./services/runActions'),
   Web3 = require('web3'),
   net = require('net'),
   bunyan = require('bunyan'),
@@ -23,7 +23,6 @@ mongoose.Promise = Promise;
 mongoose.connect(config.mongo.uri, {useMongoClient: true});
 
 const defaultQueue = `${config.rabbit.serviceName}.chrono_nem_processor`;
-const triggerEvents = ['Deposit', 'WithdrawShares', 'FeatureFeeTaken'];
 
 let init = async () => {
   let conn = await amqp.connect(config.rabbit.url)
@@ -58,15 +57,11 @@ let init = async () => {
   await channel.bindQueue(defaultQueue, 'events', `${config.rabbit.serviceName}_chrono_sc.*`);
   
   channel.prefetch(2);
-
+  
   channel.consume(defaultQueue, async (data) => {
     try {
       let event = JSON.parse(data.content.toString());
-
-      if(triggerEvents.indexOf(event.name) !== -1) {
-        const who = _.get(event, 'payload.who');
-        await makeTransfer.checkCredit(who);
-      }      
+      await runActions({event, channel});
     } catch (e) {
       log.error(e);
     }

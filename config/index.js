@@ -3,7 +3,9 @@
  * @module config
  * @returns {Object} Configuration
  */
+
 require('dotenv').config();
+const path = require('path');
 
 const config = {
   mongo: {
@@ -23,14 +25,22 @@ const config = {
     uri: `${/^win/.test(process.platform) ? '\\\\.\\pipe\\' : ''}${process.env.WEB3_URI || `/tmp/${(process.env.NETWORK || 'development')}/geth.ipc`}`
   },
   nem: {
-    mosaic: 'cb:minutes',
-    txFee: 100000,
-    bonusRate: 60,
-    host: 'http://localhost',
-    privateKey: 'secret_key',
+    mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
+    divisibillity: 100,
+    txFee: process.env.NEM_TX_FEE || 100000,
+    host: process.env.NEM_HOST || 'http://localhost',
+    privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
+    actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
+      .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus'],
+    welcomeBonus: {
+      amount: 1
+    },
+    timeBonus: {
+      rate: process.env.NEM_BONUS_RATE || 60,
+    }
   },
-  sc: {
-    path: 'defaultPath' // TODO: ...
+  smartContracts: {
+    path: process.env.SMART_CONTRACTS_PATH || path.join(__dirname, '../node_modules/chronobank-smart-contracts/build/contracts')
   }
 };
 

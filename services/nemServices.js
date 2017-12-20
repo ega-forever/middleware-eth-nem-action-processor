@@ -9,7 +9,6 @@ const makeBonusTransfer = async (address, amount) => {
       namespace: config.nem.mosaic.split(':')[0],
       mosaic: config.nem.mosaic.split(':')[1]
     };
-
   // Create mosaic object
   const mosaicAttachment = nem.model.objects.create('mosaicAttachment')(mosaicObj.namespace, mosaicObj.mosaic, amount);
   
@@ -35,7 +34,6 @@ const makeBonusTransfer = async (address, amount) => {
 
   // Set the fee for transaction (increasing value makes transaction execution faster)
   transactionEntity.fee = config.nem.txFee;
-  // console.log(common, transactionEntity, endpoint);
 
   return nem.model.transactions.send(common, transactionEntity, endpoint);
 };
