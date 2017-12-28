@@ -5,7 +5,8 @@
  */
 
 require('dotenv').config();
-const path = require('path');
+const path = require('path'),
+  _ = require('lodash');
 
 const config = {
   mongo: {

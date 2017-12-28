@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
-    "eslint-plugin-chronobank": "github:chronobank/eslint-plugin-chronobank",
     "chai": "^4.1.2",
     "eslint": "^4.11.0",
+    "eslint-plugin-chronobank": "github:chronobank/eslint-plugin-chronobank",
     "mocha": "^4.0.1"
   }
 }

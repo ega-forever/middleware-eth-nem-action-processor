@@ -1,5 +1,6 @@
-const accountModel = require('../models/accountModel'),
-  _ = require('lodash'),
+const _ = require('lodash'),
+  bunyan = require('bunyan'),
+  log = bunyan.createLogger({name: 'nemActionProcessor.runActions'}),
   net = require('net'),
   Web3 = require('web3'),
   path = require('path'),
@@ -10,7 +11,7 @@ const accountModel = require('../models/accountModel'),
 const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
 
 // Contracts loader
-const loadContracts = (contractPath, provider, contracts) => 
+const loadContracts = async (contractPath, provider, contracts) => 
   _.chain(contracts)
     .transform((acc, name) => {
       const contr = require(path.join(contractPath.path, `${name}.json`));
@@ -20,25 +21,27 @@ const loadContracts = (contractPath, provider, contracts) =>
     .value();
 
 // Load & init required contracts by truffle
-const contracts = loadContracts(config.smartContracts, provider, ['ERC20Interface', 'ERC20Manager', 'UserManager']);
+let contracts = {};
     
 module.exports = ctx => {
   const defaultActions = config.nem.actions || [];
-  ctx = _.assign(ctx, {contracts});
   
   let obj = _.chain(defaultActions)
     .intersection(_.keys(actions))
-    .map(a => {
+    .map(async a => {
       const act = actions[a];
       const events = _.get(act, 'events', []);
+      const actContracts = _.get(act, 'contracts', []);
 
       if(events.indexOf(ctx.event.name) !== -1) {
+        await loadContracts(config.smartContracts, provider, actContracts);
+        _.defaults(ctx.contracts, contracts);
+
         return act.run.call(ctx);
       }
     })
     .value();
   
   return Promise.all(obj)
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
+    .catch(err => log.error(err));
 };

@@ -2,16 +2,18 @@ const _ = require('lodash'),
   config = require('../../config'),
   accountModel = require('../../models/accountModel'),
   nemServices = require('../nemServices'),
-  Promise = require('bluebird');
+  bunyan = require('bunyan'),
+  log = bunyan.createLogger({name: 'nemActionProcessor.welcomeBonusAction'});
 
 const events = ['SetHash'];
+const contracts = ['UserManager']; /*eslint no-unused-vars: off */
 const NEM_DIVISIBILITY = _.get(config.nem, 'divisibillity', 1);
 
-async function run() {
-  console.log('Running welcomeBonus');
+async function run () {
+  const recipient = _.get(this.event, 'payload.key');
+  log.info(`Running welcomeBonus ${recipient}`);
   
-  const recipient = _.get(this.event, 'payload.key'),
-    user = (await accountModel.findOne({ address: recipient })).toObject(), // load recipient's record from DB
+  const user = (await accountModel.findOne({ address: recipient })).toObject(), // load recipient's record from DB
     nemAddress = _.get(user, 'nem'), // get NEM address from record
     isWBSent = _.get(user, 'welcomeBonusSent', false),
     amount = _.get(config.nem, 'welcomeBonus.amount', 1);
