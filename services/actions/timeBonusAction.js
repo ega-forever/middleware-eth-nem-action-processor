@@ -5,6 +5,8 @@ const _ = require('lodash'),
   Promise = require('bluebird');
 
 const events = ['Deposit', 'WithdrawShares', 'FeatureFeeTaken'];
+const contracts = ['ERC20Interface', 'ERC20Manager'];
+
 const NEM_DIVISIBILITY = _.get(config.nem, 'divisibillity', 1);
 const TIME_DIVISIBILITY = 100000000;
 

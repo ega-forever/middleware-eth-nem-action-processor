@@ -10,7 +10,7 @@ const accountModel = require('../models/accountModel'),
 const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
 
 // Contracts loader
-const loadContracts = (contractPath, provider, contracts) => 
+const loadContracts = async (contractPath, provider, contracts) => 
   _.chain(contracts)
     .transform((acc, name) => {
       const contr = require(path.join(contractPath.path, `${name}.json`));
@@ -20,19 +20,22 @@ const loadContracts = (contractPath, provider, contracts) =>
     .value();
 
 // Load & init required contracts by truffle
-const contracts = loadContracts(config.smartContracts, provider, ['ERC20Interface', 'ERC20Manager', 'UserManager']);
+let contracts = {};
     
 module.exports = ctx => {
   const defaultActions = config.nem.actions || [];
-  ctx = _.assign(ctx, {contracts});
   
   let obj = _.chain(defaultActions)
     .intersection(_.keys(actions))
-    .map(a => {
+    .map(async a => {
       const act = actions[a];
       const events = _.get(act, 'events', []);
+      const actContracts = _.get(act, 'contracts', []);
 
       if(events.indexOf(ctx.event.name) !== -1) {
+        const obj = await loadContracts(config.smartContracts, provider, actContracts);
+        _.defaults(ctx.contracts, contracts);
+
         return act.run.call(ctx);
       }
     })

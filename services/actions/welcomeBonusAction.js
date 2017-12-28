@@ -5,6 +5,7 @@ const _ = require('lodash'),
   Promise = require('bluebird');
 
 const events = ['SetHash'];
+const contracts = ['UserManager'];
 const NEM_DIVISIBILITY = _.get(config.nem, 'divisibillity', 1);
 
 async function run() {
