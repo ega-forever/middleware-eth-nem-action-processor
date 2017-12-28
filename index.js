@@ -9,8 +9,6 @@
  */
 
 const config = require('./config'),
-  _ = require('lodash'),
-  mongoose = require('mongoose'),
   runActions = require('./services/runActions'),
   Web3 = require('web3'),
   net = require('net'),
@@ -19,6 +17,7 @@ const config = require('./config'),
   log = bunyan.createLogger({name: 'core.nemActionProcessor'}),
   amqp = require('amqplib');
 
+const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 mongoose.connect(config.mongo.uri, {useMongoClient: true});
 

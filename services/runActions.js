@@ -1,5 +1,6 @@
-const accountModel = require('../models/accountModel'),
-  _ = require('lodash'),
+const _ = require('lodash'),
+  bunyan = require('bunyan'),
+  log = bunyan.createLogger({name: 'nemActionProcessor.runActions'}),
   net = require('net'),
   Web3 = require('web3'),
   path = require('path'),
@@ -33,7 +34,7 @@ module.exports = ctx => {
       const actContracts = _.get(act, 'contracts', []);
 
       if(events.indexOf(ctx.event.name) !== -1) {
-        const obj = await loadContracts(config.smartContracts, provider, actContracts);
+        await loadContracts(config.smartContracts, provider, actContracts);
         _.defaults(ctx.contracts, contracts);
 
         return act.run.call(ctx);
@@ -42,6 +43,5 @@ module.exports = ctx => {
     .value();
   
   return Promise.all(obj)
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
+    .catch(err => log.error(err));
 };
