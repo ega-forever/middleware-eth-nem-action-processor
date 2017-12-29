@@ -14,7 +14,7 @@ const makeBonusTransfer = async (address, amount) => {
   const mosaicAttachment = nem.model.objects.create('mosaicAttachment')(mosaicObj.namespace, mosaicObj.mosaic, amount);
   
   // Create transfer object
-  let transferTransaction = nem.model.objects.create('transferTransaction')(address, null, message);
+  let transferTransaction = nem.model.objects.create('transferTransaction')(address, 1, message);
 
   transferTransaction.mosaics.push(mosaicAttachment);
   const fullMosaicName  = nem.utils.format.mosaicIdToName(mosaicAttachment.mosaicId);
