@@ -6,7 +6,8 @@
  */
 
 const mongoose = require('mongoose'),
-  messages = require('../factories').messages.accountMessageFactory;
+  config = require('../config'),
+  messages = require('../factories/messages/addressMessageFactory');
 
 require('mongoose-long')(mongoose);
 
@@ -30,4 +31,4 @@ const Account = new mongoose.Schema({
   welcomeBonusSent: {type: Boolean, default: false}
 });
 
-module.exports = mongoose.model('EthAccount', Account);
+module.exports = mongoose.model(`${config.mongo.accounts.collectionPrefix}Account`, Account);
