@@ -21,7 +21,8 @@ module.exports = (event, contracts) => {
   return Promise.all(obj)
     .then(statuses => {
       for (let status of statuses)
-        log.info(status);
+        if (status)
+          log.info(status);
     })
     .catch(err => log.error(err));
 };
