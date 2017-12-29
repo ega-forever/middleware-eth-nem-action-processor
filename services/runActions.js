@@ -1,47 +1,27 @@
 const _ = require('lodash'),
   bunyan = require('bunyan'),
   log = bunyan.createLogger({name: 'nemActionProcessor.runActions'}),
-  net = require('net'),
-  Web3 = require('web3'),
-  path = require('path'),
   config = require('../config'),
-  actions = require('./actions'),
-  contract = require('truffle-contract');
+  actions = require('./actions');
 
-const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
+module.exports = (event, contracts) => {
 
-// Contracts loader
-const loadContracts = async (contractPath, provider, contracts) => 
-  _.chain(contracts)
-    .transform((acc, name) => {
-      const contr = require(path.join(contractPath.path, `${name}.json`));
-      acc[name] = contract(contr);
-      acc[name].setProvider(provider);
-    }, {})
-    .value();
-
-// Load & init required contracts by truffle
-let contracts = {};
-    
-module.exports = ctx => {
-  const defaultActions = config.nem.actions || [];
-  
-  let obj = _.chain(defaultActions)
+  let obj = _.chain(config.nem.actions)
     .intersection(_.keys(actions))
     .map(async a => {
-      const act = actions[a];
-      const events = _.get(act, 'events', []);
-      const actContracts = _.get(act, 'contracts', []);
+      const action = actions[a];
+      const events = _.get(action, 'events', []);
 
-      if(events.indexOf(ctx.event.name) !== -1) {
-        await loadContracts(config.smartContracts, provider, actContracts);
-        _.defaults(ctx.contracts, contracts);
+      if (events.indexOf(event.name) !== -1)
+        return action.run(event, contracts);
 
-        return act.run.call(ctx);
-      }
     })
     .value();
-  
+
   return Promise.all(obj)
+    .then(statuses => {
+      for (let status of statuses)
+        log.info(status);
+    })
     .catch(err => log.error(err));
 };
