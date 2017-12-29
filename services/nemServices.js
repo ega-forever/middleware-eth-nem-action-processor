@@ -4,7 +4,7 @@ const nem = require('nem-sdk').default,
 const makeBonusTransfer = async (address, amount) => {
   const message = 'Bonus from Chronobank',
     endpoint = nem.model.objects.create('endpoint')(config.nem.host, nem.model.nodes.defaultPort),
-    common = nem.model.objects.create('common')('', config.nem.privateKey),
+    common = nem.model.objects.create('common')(config.nem.password, config.nem.privateKey),
     mosaicObj = {
       namespace: config.nem.mosaic.split(':')[0],
       mosaic: config.nem.mosaic.split(':')[1]
@@ -22,7 +22,7 @@ const makeBonusTransfer = async (address, amount) => {
   // Pull definition for our Mosaic
   const mosaicDefinition = await nem.com.requests.namespace.mosaicDefinitions(endpoint, mosaicAttachment.mosaicId.namespaceId);
   const neededDefinition = nem.utils.helpers.searchMosaicDefinitionArray(mosaicDefinition.data, [ mosaicAttachment.mosaicId.name]);
-    
+
   // Create definition meta data pair
   let mosaicDefinitionMetaDataPair = nem.model.objects.get('mosaicDefinitionMetaDataPair');
   mosaicDefinitionMetaDataPair[fullMosaicName] = {};
