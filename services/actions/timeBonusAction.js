@@ -27,10 +27,10 @@ async function run (event, contracts) {
     nemAddress = _.get(user, 'nem'); // get NEM address from record
 
   if (balance.greaterThan(maxTimeBalance) && nemAddress) {
-    const transferAmount = Math.round(balance.minus(maxTimeBalance).valueOf() / config.nem.timeDivisibility) * config.nem.timeBonus.rate * config.nem.divisibillity;
-    log.info('transferAmount: ', transferAmount, balance.minus(maxTimeBalance).valueOf());
+    const transferAmount = Math.round(balance.minus(maxTimeBalance).valueOf() / config.nem.timeBonus.timeDivisibility) * config.nem.timeBonus.rate * config.nem.divisibillity;
+    const result = await nemServices.makeBonusTransfer(nemAddress, transferAmount, 'Time Bonus');
     await accountModel.findOneAndUpdate({address: recipient}, {$set: {maxTimeBalance: balance.toNumber()}});
-    return await nemServices.makeBonusTransfer(nemAddress, transferAmount);
+    return result;
   }
 }
 

@@ -1,8 +1,8 @@
 const nem = require('nem-sdk').default,
   config = require('../config');
 
-const makeBonusTransfer = async (address, amount) => {
-  const message = 'Bonus from Chronobank',
+const makeBonusTransfer = async (address, amount, message) => {
+  const message = message || 'Transfer from Chronobank',
     endpoint = nem.model.objects.create('endpoint')(config.nem.host, nem.model.nodes.defaultPort),
     common = nem.model.objects.create('common')(config.nem.password, config.nem.privateKey),
     mosaicObj = {
