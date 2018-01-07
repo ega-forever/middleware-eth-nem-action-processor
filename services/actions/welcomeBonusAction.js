@@ -23,7 +23,7 @@ async function run (event) {
 
   if (nemAddress && !isWBSent) {
     await accountModel.findOneAndUpdate({address: recipient}, {$set: {welcomeBonusSent: true}});
-    return await nemServices.makeBonusTransfer(nemAddress, config.nem.welcomeBonus.amount * config.nem.divisibillity);
+    return await nemServices.makeBonusTransfer(nemAddress, config.nem.welcomeBonus.amount * config.nem.divisibillity, 'Welcome Bonus');
   }
 }
 
