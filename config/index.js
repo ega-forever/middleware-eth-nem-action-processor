@@ -3,34 +3,46 @@
  * @module config
  * @returns {Object} Configuration
  */
+
 require('dotenv').config();
+const path = require('path'),
+  _ = require('lodash');
 
 const config = {
   mongo: {
-    uri: process.env.MONGO_URI || 'mongodb://localhost:27017/data'
+    accounts: {
+      uri: process.env.MONGO_ACCOUNTS_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/data',
+      collectionPrefix: process.env.MONGO_ACCOUNTS_COLLECTION_PREFIX || process.env.MONGO_COLLECTION_PREFIX || 'eth'
+    }
   },
   rabbit: {
     url: process.env.RABBIT_URI || 'amqp://localhost:5672',
     serviceName: process.env.RABBIT_SERVICE_NAME || 'app_eth'
-  },
-  rest: {
-    domain: process.env.DOMAIN || 'localhost',
-    port: parseInt(process.env.REST_PORT) || 8081,
-    auth: process.env.USE_AUTH || false
   },
   web3: {
     network: process.env.NETWORK || 'development',
     uri: `${/^win/.test(process.platform) ? '\\\\.\\pipe\\' : ''}${process.env.WEB3_URI || `/tmp/${(process.env.NETWORK || 'development')}/geth.ipc`}`
   },
   nem: {
-    mosaic: 'cb:minutes',
-    txFee: 100000,
-    bonusRate: 60,
-    host: 'http://localhost',
-    privateKey: 'secret_key',
+    network: process.env.NEM_NETWORK ? parseInt(process.env.NEM_NETWORK) : -104,
+    mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
+    divisibillity: 100,
+    txFee: process.env.NEM_TX_FEE || 2000000,
+    host: process.env.NEM_HOST || 'http://localhost',
+    privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
+    password: process.env.NEM_PASSWORD || '',
+    actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
+      .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus'],
+    welcomeBonus: {
+      amount: 1
+    },
+    timeBonus: {
+      rate: process.env.NEM_BONUS_RATE || 60,
+      timeDivisibility: 100000000
+    }
   },
-  sc: {
-    path: 'defaultPath' // TODO: ...
+  smartContracts: {
+    path: process.env.SMART_CONTRACTS_PATH || path.join(__dirname, '../node_modules/chronobank-smart-contracts/build/contracts')
   }
 };
 
