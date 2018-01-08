@@ -27,7 +27,7 @@ const Account = new mongoose.Schema({
     required: true,
     validate: [a=>  /^[0-9A-Z]{40}$/.test(a), messages.wrongAddress]
   },
-  maxTimeBalance: {type: mongoose.Schema.Types.Long, default: 0},
+  maxTimeDeposit: {type: mongoose.Schema.Types.Long, default: 0},
   welcomeBonusSent: {type: Boolean, default: false}
 });
 
