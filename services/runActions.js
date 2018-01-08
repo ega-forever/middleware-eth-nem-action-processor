@@ -23,6 +23,5 @@ module.exports = (event, contracts) => {
       for (let status of statuses)
         if (status)
           log.info(status);
-    })
-    .catch(err => log.error(err));
+    });
 };
