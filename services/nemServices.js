@@ -1,4 +1,5 @@
 const nem = require('nem-sdk').default,
+  Promise = require('bluebird'),
   config = require('../config');
 
 const makeBonusTransfer = async (address, amount, message) => {
@@ -35,7 +36,7 @@ const makeBonusTransfer = async (address, amount, message) => {
   // Set the fee for transaction (increasing value makes transaction execution faster)
   transactionEntity.fee = config.nem.txFee;
 
-  return nem.model.transactions.send(common, transactionEntity, endpoint);
+  return Promise.resolve(nem.model.transactions.send(common, transactionEntity, endpoint)).timeout(2000);
 };
 
 module.exports = {makeBonusTransfer};

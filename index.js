@@ -73,6 +73,8 @@ let init = async () => {
       channel.ack(data);
     } catch (e) {
       log.error(e);
+      log.info('an error occurred, exiting in 5 seconds...');
+      setTimeout(() => process.exit(0), 5000);
     }
   });
 };
