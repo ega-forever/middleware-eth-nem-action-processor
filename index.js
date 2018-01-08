@@ -69,7 +69,6 @@ let init = async () => {
   channel.consume(defaultQueue, async (data) => {
     try {
       let event = JSON.parse(data.content.toString());
-      //await runActions({event, channel});
       await runActions(event, contracts);
       channel.ack(data);
     } catch (e) {
