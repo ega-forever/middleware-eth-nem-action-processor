@@ -27,7 +27,7 @@ const config = {
     network: process.env.NEM_NETWORK ? parseInt(process.env.NEM_NETWORK) : -104,
     mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
     divisibillity: 100,
-    txFee: process.env.NEM_TX_FEE || 200000,
+    txFee: process.env.NEM_TX_FEE,
     host: process.env.NEM_HOST || 'http://localhost',
     privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
     password: process.env.NEM_PASSWORD || '',
