@@ -23,8 +23,8 @@ async function run (event) {
   let maxTimeDeposit = _.get(user, 'maxTimeDeposit', 0), // get maxTimeDeposit from record
     nemAddress = _.get(user, 'nem'); // get NEM address from record
 
-  if (amount > maxTimeDeposit && nemAddress) {
-    const transferAmount = Math.round((amount - maxTimeDeposit) / config.nem.timeBonus.timeDivisibility) * config.nem.timeBonus.rate * config.nem.divisibillity;
+  if (nemAddress && (amount - maxTimeDeposit) / config.nem.timeBonus.timeDivisibility * config.nem.timeBonus.rate >= 1) {
+    const transferAmount = (amount - maxTimeDeposit) / config.nem.timeBonus.timeDivisibility * config.nem.timeBonus.rate * config.nem.divisibillity;
     const result = await nemServices.makeBonusTransfer(nemAddress, transferAmount, 'Time Bonus');
     await accountModel.findOneAndUpdate({address: recipient}, {$set: {maxTimeDeposit: amount}});
     return result;
