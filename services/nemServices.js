@@ -1,5 +1,6 @@
 const nem = require('nem-sdk').default,
   Promise = require('bluebird'),
+  _ = require('lodash'),
   config = require('../config');
 
 const makeBonusTransfer = async (address, amount, message) => {
@@ -34,9 +35,14 @@ const makeBonusTransfer = async (address, amount, message) => {
     .prepare('mosaicTransferTransaction')(common, transferTransaction, mosaicDefinitionMetaDataPair, config.nem.network);
 
   // Set the fee for transaction (increasing value makes transaction execution faster)
-  transactionEntity.fee = config.nem.txFee;
+  if (config.nem.txFee)
+    transactionEntity.fee = config.nem.txFee;
 
-  return Promise.resolve(nem.model.transactions.send(common, transactionEntity, endpoint)).timeout(2000);
+  let result = await Promise.resolve(nem.model.transactions.send(common, transactionEntity, endpoint)).timeout(2000);
+  if (!_.has(result, 'code') || ![0, 1].includes(result.code))
+    return Promise.reject(result);
+
+  return result;
 };
 
 module.exports = {makeBonusTransfer};
