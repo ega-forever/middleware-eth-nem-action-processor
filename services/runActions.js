@@ -4,7 +4,7 @@ const _ = require('lodash'),
   config = require('../config'),
   actions = require('./actions');
 
-module.exports = (event, contracts) => {
+module.exports = (event) => {
 
   let obj = _.chain(config.nem.actions)
     .intersection(_.keys(actions))
@@ -13,7 +13,7 @@ module.exports = (event, contracts) => {
       const events = _.get(action, 'events', []);
 
       if (events.indexOf(event.name) !== -1)
-        return action.run(event, contracts);
+        return action.run(event);
 
     })
     .value();
@@ -23,6 +23,5 @@ module.exports = (event, contracts) => {
       for (let status of statuses)
         if (status)
           log.info(status);
-    })
-    .catch(err => log.error(err));
+    });
 };
