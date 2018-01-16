@@ -29,6 +29,7 @@ const config = {
     divisibillity: 100,
     txFee: process.env.NEM_TX_FEE,
     host: process.env.NEM_HOST || 'http://localhost',
+    port: process.env.NEM_PORT || 7890,
     privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
     password: process.env.NEM_PASSWORD || '',
     actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
