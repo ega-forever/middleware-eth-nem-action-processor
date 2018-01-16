@@ -14,7 +14,7 @@ async function run (event) {
   let user = await accountModel.findOne({address: recipient}); // load recipient's record from DB
 
   if (!user)
-    return;
+    return Promise.reject({code: 0});
 
   user = user.toObject();
 
