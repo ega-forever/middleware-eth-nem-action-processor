@@ -21,6 +21,11 @@ mongoose.connect(config.mongo.accounts.uri, {useMongoClient: true});
 
 const defaultQueue = `${config.rabbit.serviceName}.chrono_nem_processor`;
 
+mongoose.connection.on('disconnected', function () {
+  log.error('mongo disconnected!');
+  process.exit(0);
+});
+
 let init = async () => {
   let conn = await amqp.connect(config.rabbit.url)
     .catch(() => {
