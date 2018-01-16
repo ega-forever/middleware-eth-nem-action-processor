@@ -5,7 +5,7 @@ const nem = require('nem-sdk').default,
 
 const makeBonusTransfer = async (address, amount, message) => {
   message = message || 'Transfer from Chronobank';
-  const endpoint = nem.model.objects.create('endpoint')(config.nem.host, nem.model.nodes.defaultPort),
+  const endpoint = nem.model.objects.create('endpoint')(config.nem.host, config.nem.port),
     common = nem.model.objects.create('common')(config.nem.password, config.nem.privateKey),
     mosaicObj = {
       namespace: config.nem.mosaic.split(':')[0],
