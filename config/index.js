@@ -5,8 +5,7 @@
  */
 
 require('dotenv').config();
-const path = require('path'),
-  _ = require('lodash');
+const _ = require('lodash');
 
 const config = {
   mongo: {
@@ -17,7 +16,8 @@ const config = {
   },
   rabbit: {
     url: process.env.RABBIT_URI || 'amqp://localhost:5672',
-    serviceName: process.env.RABBIT_SERVICE_NAME || 'app_eth'
+    serviceName: process.env.RABBIT_SERVICE_NAME || 'app_eth',
+    ttl: process.env.RABBIT_SERVICE_TTL || 1000 * 60 * 60 * 48
   },
   web3: {
     network: process.env.NETWORK || 'development',
@@ -40,9 +40,6 @@ const config = {
       rate: process.env.NEM_BONUS_RATE || 60,
       timeDivisibility: 100000000 //1 time
     }
-  },
-  smartContracts: {
-    path: process.env.SMART_CONTRACTS_PATH || path.join(__dirname, '../node_modules/chronobank-smart-contracts/build/contracts')
   }
 };
 
