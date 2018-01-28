@@ -13,7 +13,7 @@ module.exports = (event) => {
       const events = _.get(action, 'events', []);
 
       if (events.indexOf(event.name) !== -1)
-        return action.run(event);
+        return await action.run(event);
 
     })
     .value();
