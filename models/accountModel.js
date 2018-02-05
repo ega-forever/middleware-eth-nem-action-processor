@@ -23,10 +23,9 @@ const Account = new mongoose.Schema({
   erc20token : {type: mongoose.Schema.Types.Mixed, default: {}},
   nem: {
     type: String,
-    unique: true,
-    required: true,
     validate: [a=>  /^[0-9A-Z]{40}$/.test(a), messages.wrongAddress]
   },
+  isActive: {type: Boolean, required: true, default: true},
   maxTimeDeposit: {type: mongoose.Schema.Types.Long, default: 0},
   welcomeBonusSent: {type: Boolean, default: false}
 });
