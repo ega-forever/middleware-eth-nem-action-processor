@@ -7,15 +7,19 @@ RUN apt update && \
     npm install -g pm2@2.7.1 && \
     mkdir /app
 WORKDIR /app
+
+RUN mkdir src && mkdir src/core
+COPY . src/core/middleware-eth-nem-action-processor
+RUN cd src/core/middleware-eth-nem-action-processor && npm install
+
 RUN npm install -g chronobank-middleware --unsafe
-RUN mkdir src && cd src && \
+RUN cd src && \
     dmt init && \
     dmt install middleware-eth-blockprocessor \
-    middleware-eth-rest \
     middleware-eth-chrono-sc-processor \
     middleware-eth-balance-processor \
     middleware-eth-ipfs \
     middleware-eth-erc20 \
-    middleware-eth-nem-action-processor
+    middleware-eth-rest
 EXPOSE 8080
 CMD pm2-docker start /mnt/config/${NETWORK_TYPE}/ecosystem.config.js
