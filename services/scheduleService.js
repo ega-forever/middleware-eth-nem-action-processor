@@ -47,7 +47,7 @@ module.exports = () => {
         $lookup: {
           from: 'deposits',
           localField: 'account.address',
-          foreignField: '_from',
+          foreignField: 'who',
           as: 'deposit'
         }
       },
@@ -61,10 +61,10 @@ module.exports = () => {
           sethash_count: {$size: '$sethash'},
           welcomeBonusSent: '$account.welcomeBonusSent',
           maxTimeDeposit: '$account.maxTimeDeposit',
-          maxFoundDeposit: {$max: '$deposit.value'},
+          maxFoundDeposit: {$max: '$deposit.amount'},
           maxDepEq: {
             $lte: [
-              {$ifNull: [{$max: '$deposit.value'}, 0]},
+              {$ifNull: [{$max: '$deposit.amount'}, 0]},
               {$ifNull: [{$max: '$account.maxTimeDeposit'}, 0]}
             ]
           }
