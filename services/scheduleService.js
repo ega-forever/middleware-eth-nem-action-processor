@@ -1,4 +1,10 @@
 /**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ * @author Egor Zuev <zyev.egor@gmail.com>
+ */
+
+/**
  * Ping IPFS by specified time in config
  * @module services/scheduleService
  * @see module:config
@@ -92,11 +98,11 @@ module.exports = () => {
     });
 
     if (_.compact(welcomeBonusResult).length !== welcomeBonusSets.length ||
-      _.compact(depositBonusResult).length !== depositBonusResult.length) {
+      _.compact(depositBonusResult).length !== depositBonusResult.length) 
       log.info('some of binues hasn\'t been processed!');
-    } else {
+    else 
       log.info('bonuses has been sent!');
-    }
+    
 
     isPending = false;
 

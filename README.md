@@ -67,8 +67,10 @@ The options are presented below:
 | NEM_BONUS_RATE   | bonus convertation rate (is used to convert the deposit unit to mosaic's value). The default value is 60
 
 
-
 License
 ----
+ [GNU AGPLv3](LICENSE)
 
-MIT
+Copyright
+----
+LaborX PTY

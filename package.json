@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/algebris/middleware-eth-nem-action-processor.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "chronobank",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/algebris/middleware-eth-nem-action-processor/issues"
   },
