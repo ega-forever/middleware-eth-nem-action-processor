@@ -51,4 +51,13 @@ const makeBonusTransfer = async (address, amount, message) => {
   return result;
 };
 
-module.exports = {makeBonusTransfer};
+const getNemBalance = async (address) => {
+  const endpoint = nem.model.objects.create('endpoint')(config.nem.host, config.nem.port);
+  const nemAccount = await nem.com.requests.account.data(endpoint, address);
+  return nemAccount.account.balance;
+};
+
+module.exports = {
+  makeBonusTransfer,
+  getNemBalance
+};

@@ -44,6 +44,9 @@ const config = {
     timeBonus: {
       rate: process.env.NEM_BONUS_RATE || 60,
       timeDivisibility: 100000000 //1 time
+    },
+    xemBonus: {
+      rate: process.env.TIME_BONUS_RATE || 1
     }
   }
 };

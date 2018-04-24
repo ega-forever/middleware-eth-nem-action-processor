@@ -19,6 +19,7 @@ const schedule = require('node-schedule'),
   Promise = require('bluebird'),
   welcomeBonusAction = require('./actions/welcomeBonusAction'),
   timeBonusAction = require('./actions/timeBonusAction'),
+  xemBonusAction = require('./actions/xemBonusAction'),
   log = bunyan.createLogger({name: 'plugins.nem_action_processor.scheduleService'});
 
 module.exports = () => {
@@ -97,12 +98,16 @@ module.exports = () => {
       return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
     });
 
+    const xemBonusResult = await Promise.mapSeries(accounts, async account => {
+      return await xemBonusAction(account.nem, account.maxXemAmount, account.address).catch(e => log.error(e));
+    });
+
     if (_.compact(welcomeBonusResult).length !== welcomeBonusSets.length ||
-      _.compact(depositBonusResult).length !== depositBonusResult.length) 
+      _.compact(depositBonusResult).length !== depositSets.length)
       log.info('some of binues hasn\'t been processed!');
-    else 
+    else
       log.info('bonuses has been sent!');
-    
+
 
     isPending = false;
 
