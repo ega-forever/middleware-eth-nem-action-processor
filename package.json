@@ -36,6 +36,8 @@
     "chai": "^4.1.2",
     "eslint": "^4.11.0",
     "eslint-plugin-chronobank": "github:chronobank/eslint-plugin-chronobank",
+    "middleware-eth-blockprocessor": "github:chronobank/middleware-eth-blockprocessor",
+    "middleware-eth-chrono-sc-processor": "github:chronobank/middleware-eth-chrono-sc-processor",
     "mocha": "^4.0.1"
   }
 }
