@@ -20,10 +20,7 @@ install:
   - npm install -g pm2
 
 before_script:
-    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && npm install
-    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start ipcConverter.js
-    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start index.js
-    - sleep 30 && cd $TRAVIS_BUILD_DIR
+    - pm2 start index.js
 
 script:
   - sleep 30 && npm test -- --coverage
@@ -52,7 +49,6 @@ after_success:
       travis_wait 30 docker build -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/middleware-ethereum:$IMAGE_TAG_NAME --build-arg RELEASE=develop --build-arg GITHUB_API_KEY=$GITHUB_API_KEY .
       docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/middleware-ethereum:$IMAGE_TAG_NAME
     fi;
-
 notifications:
   email: false
 
