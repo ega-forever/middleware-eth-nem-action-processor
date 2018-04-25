@@ -12,11 +12,11 @@ const config = require('../config'),
   timeBonus = require('../services/actions/timeBonusAction'),
   welcomeBonus = require('../services/actions/welcomeBonusAction'),
   xemBonus = require('../services/actions/xemBonusAction'),
- // aggregateModule = require('./helpers/aggregateModule'),
+  aggregateModule = require('./helpers/aggregateModule'),
   checkModel = require('./helpers/checkAccountModel'),
   userRegistration = require('./helpers/registrationUser'),
-  //generateSetHashEvent = require('./helpers/generateSetHashEvent'),
-  //generateDepositEvent = require('./helpers/generateDepositEvent'),
+  generateSetHashEvent = require('./helpers/generateSetHashEvent'),
+  generateDepositEvent = require('./helpers/generateDepositEvent'),
   deleteModels = require('./helpers/deleteModels');
 
 mongoose.Promise = Promise;
@@ -34,9 +34,9 @@ describe('core/nem processor', function () {
 
       accounts = await Promise.promisify(web3.eth.getAccounts)();
 
-      // await generateSetHashEvent(accounts[0], provider);
-      //
-      // await generateDepositEvent(accounts[0], provider);
+      await generateSetHashEvent(accounts[0], provider);
+      
+      await generateDepositEvent(accounts[0], provider);
 
       await userRegistration(accounts[0]);
     })
@@ -45,13 +45,13 @@ describe('core/nem processor', function () {
       await deleteModels();
     })
 
-    // it('test aggregate data base', async () => {
-    //       await Promise.delay(400);
-    //       let result = await aggregateModule();
-    //       expect(result.depositSets).to.not.be.empty();
-    //       expect(result.welcomeBonusSets).to.not.be.empty();
-    //       expect(result.accounts).to.not.be.empty(); 
-    // })
+    it('test aggregate data base', async () => {
+          await Promise.delay(400);
+          let result = await aggregateModule();
+          expect(result.depositSets).to.not.be.empty();
+          expect(result.welcomeBonusSets).to.not.be.empty();
+          expect(result.accounts).to.not.be.empty(); 
+    })
 
     it('test welcome bonus action', async () => {
       let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
