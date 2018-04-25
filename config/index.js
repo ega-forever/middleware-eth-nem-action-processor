@@ -27,14 +27,18 @@ const config = {
   schedule: {
     job: process.env.SCHEDULE_NEM_JOB || '30 * * * * *'
   },
+  web3: {
+    network: process.env.NETWORK || 'development',
+    uri: `${/^win/.test(process.platform) ? '\\\\.\\pipe\\' : ''}${process.env.WEB3_URI || `/tmp/${(process.env.NETWORK || 'development')}/geth.ipc`}`
+  },
   nem: {
     network: process.env.NEM_NETWORK ? parseInt(process.env.NEM_NETWORK) : -104,
     mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
     divisibillity: 100,
-    txFee: process.env.NEM_TX_FEE,
-    host: process.env.NEM_HOST || 'http://localhost',
+    txFee: process.env.NEM_TX_FEE||100000,
+    host: process.env.NEM_HOST || 'http://192.3.61.243',
     port: process.env.NEM_PORT || 7890,
-    privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
+    privateKey: process.env.NEM_PRIVATE_KEY || 'ea05f57a790ed389feff0ae8a822b23101f0802fa175cd9efd4301d6b82ead74',
     password: process.env.NEM_PASSWORD || '',
     actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
       .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus'],

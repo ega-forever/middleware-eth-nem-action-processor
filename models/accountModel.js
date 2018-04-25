@@ -37,4 +37,4 @@ const Account = new mongoose.Schema({
   maxXemAmount: {type: mongoose.Schema.Types.Long, default: 0}
 });
 
-module.exports = mongoose.accounts.model(`${config.mongo.accounts.collectionPrefix}Account`, Account);
+module.exports = mongoose.model(`${config.mongo.accounts.collectionPrefix}Account`, Account);
