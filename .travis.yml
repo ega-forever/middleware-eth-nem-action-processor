@@ -23,8 +23,7 @@ before_script:
     - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && npm install
     - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start ipcConverter.js
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start index.js
-    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chrono.sc.processor && npm run deploy:contracts
-    - sleep 30 && cd $TRAVIS_BUILD_DIR
+    - sleep 30 && cd $TRAVIS_BUILD_DIR && npm run deploy:contracts
 
 script:
   - sleep 30 && npm test -- --coverage
