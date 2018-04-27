@@ -43,31 +43,33 @@ describe('core/nem processor', function () {
     })
 
     it('test aggregate data base', async () => {
-      await Promise.delay(400);
+      await Promise.delay(1000);
       let result = await aggregateModule();
       expect(result.depositSets).to.not.be.empty();
       expect(result.welcomeBonusSets).to.not.be.empty();
       expect(result.accounts).to.not.be.empty();
     })
 
-    // it('test welcome bonus action', async () => {
-    //   let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
-    //   expect(result.code).to.be.equal(1);
-    // });
-    //
-    // it('test time bonus action', async () => {
-    //   await Promise.delay(400);
-    //   let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
-    //   expect(result.code).to.be.equal(1);
-    // });
-    //
-    // it('test xem bonus action', async () => {
-    //   let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
-    //   expect(result.code).to.be.equal(1);
-    // })
+    it('test welcome bonus action', async () => {
+      await Promise.delay(1000);
+      let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
+      expect(result.code).to.be.equal(1);
+    });
+
+    it('test time bonus action', async () => {
+      await Promise.delay(1000);
+      let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
+      expect(result.code).to.be.equal(1);
+    });
+
+    it('test xem bonus action', async () => {
+      await Promise.delay(1000);
+      let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
+      expect(result.code).to.be.equal(1);
+    })
 
     it('test account status', async () => {
-      await Promise.delay(400);
+      await Promise.delay(1000);
       let result = await checkModel(accounts[0]);
       expect(result[0].welcomeBonusSent).to.be.equal(true);
     });
