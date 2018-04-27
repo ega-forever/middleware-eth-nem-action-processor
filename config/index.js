@@ -54,6 +54,7 @@ const config = {
       timeDivisibility: 100000000 //1 time
     },
     xemBonus: {
+      xemDivisibility: 1000,
       rate: process.env.TIME_BONUS_RATE || 1
     }
   }

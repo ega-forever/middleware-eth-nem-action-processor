@@ -5,6 +5,17 @@ group: stable
 language: node_js
 node_js: 7.6.0
 
+env:
+  global:
+    - NEM_TX_FEE=500000
+    - NEM_HOST='http://192.3.61.243'
+    - NEM_PORT=7890
+    - NEM_PRIVATE_KEY='ea05f57a790ed389feff0ae8a822b23101f0802fa175cd9efd4301d6b82ead74'
+    - NEM_ADDRESS='TADSJV736MEIBHTCRPY4GR6HONMYO2ROX423GJOD'
+    - NEM_PASSWORD='Mixa_Bush1992'
+    - NEM_MOSAIC_NAME='cb_test:minutest'
+
+
 services:
   - mongodb
   - rabbitmq
@@ -20,13 +31,13 @@ install:
   - npm install -g pm2
 
 before_script:
-    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && npm install 
-    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start ipcConverter.js 
+    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && npm install
+    - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start ipcConverter.js
     - sleep 30 && cd $TRAVIS_BUILD_DIR && npm run deploy:contracts
-    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && npm install 
+    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && npm install
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && pm2 start index.js
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start index.js
-    - sleep 30 && cd $TRAVIS_BUILD_DIR 
+    - sleep 30 && cd $TRAVIS_BUILD_DIR
 
 script:
   - sleep 30 && npm test -- --coverage
