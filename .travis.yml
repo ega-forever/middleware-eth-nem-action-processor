@@ -5,18 +5,6 @@ group: stable
 language: node_js
 node_js: 7.6.0
 
-env:
-  global:
-    - NEM_TX_FEE=500000
-    - NEM_HOST='http://192.3.61.243'
-    - NEM_PORT=7890
-    - NEM_PRIVATE_KEY='ea05f57a790ed389feff0ae8a822b23101f0802fa175cd9efd4301d6b82ead74'
-    - NEM_ADDRESS='TADSJV736MEIBHTCRPY4GR6HONMYO2ROX423GJOD'
-    - NEM_PASSWORD='Mixa_Bush1992'
-    - NEM_MOSAIC_NAME='cb_test:minutest'
-    - SMART_CONTRACTS_PATH=$TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor/node_modules/chronobank-smart-contracts/build/contracts
-
-
 services:
   - mongodb
   - rabbitmq
