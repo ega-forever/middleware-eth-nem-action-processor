@@ -81,76 +81,29 @@ module.exports = () => {
       }
     ]);
 
-    console.log('test: ', test);
-    //
-    // const filtered = await blockModel.aggregate([
-    //   {
-    //     $project: {
-    //       account: accounts
-    //     }
-    //   },
-    //   {$unwind: '$account'},
-    //   {
-    //     $lookup: {
-    //       from: 'sethashes',
-    //       localField: 'account.address',
-    //       foreignField: 'key',
-    //       as: 'sethash'
-    //     }
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: 'deposits',
-    //       localField: 'account.address',
-    //       foreignField: 'who',
-    //       as: 'deposit'
-    //     }
-    //   },
-    //   {
-    //     $project: {
-    //       address: '$account.address',
-    //       nem: '$account.nem',
-    //       deposit: '$deposit',
-    //       deposit_count: {$size: '$deposit'},
-    //       sethash: '$sethash',
-    //       sethash_count: {$size: '$sethash'},
-    //       welcomeBonusSent: '$account.welcomeBonusSent',
-    //       maxTimeDeposit: '$account.maxTimeDeposit',
-    //       maxFoundDeposit: {$max: '$deposit.amount'},
-    //       maxDepEq: {
-    //         $lte: [
-    //           {$ifNull: [{$max: '$deposit.amount'}, 0]},
-    //           {$ifNull: [{$max: '$account.maxTimeDeposit'}, 0]}
-    //         ]
-    //       }
-    //     }
-    //   },
-    //   {
-    //     $match: {
-    //       $or: [
-    //         {sethash_count: {$gt: 0}, welcomeBonusSent: {$ne: true}},
-    //         {deposit_count: {$gt: 0}, maxDepEq: false}
-    //       ]
-    //     }
-    //   }
-    // ]);
-
-  //  console.log('Filtered: ', filtered);
-
     const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent);
     const depositSets = _.filter(filtered, item => !item.maxDepEq);
 
-    const welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
-      return await welcomeBonusAction(set.address, config.nem.welcomeBonus.amount, set.nem).catch(e => log.error(e));
-    });
+    let welcomeBonusResult;
+    let depositBonusResult;
 
-    const depositBonusResult = await Promise.mapSeries(depositSets, async set => {
-      return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
-    });
+    if(config.bonusSwitch.welcomeBonus){
+        welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
+        return await welcomeBonusAction(set.address, config.nem.welcomeBonus.amount, set.nem).catch(e => log.error(e));
+      });
+    };
 
-    const xemBonusResult = await Promise.mapSeries(accounts, async account => {
-      return await xemBonusAction(account.nem, account.maxXemAmount, account.address).catch(e => log.error(e));
-    });
+    if(config.bonusSwitch.timeBonus){
+        depositBonusResult = await Promise.mapSeries(depositSets, async set => {
+        return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
+      });
+    };
+
+    if(config.bonusSwitch.xemBonus){
+      const xemBonusResult = await Promise.mapSeries(accounts, async account => {
+        return await xemBonusAction(account.nem, account.maxXemAmount, account.address).catch(e => log.error(e));
+      });
+    };
 
     if (_.compact(welcomeBonusResult).length !== welcomeBonusSets.length ||
       _.compact(depositBonusResult).length !== depositSets.length)

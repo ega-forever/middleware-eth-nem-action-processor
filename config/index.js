@@ -56,8 +56,13 @@ const config = {
     },
     xemBonus: {
       xemDivisibility: 1000,
-      rate: process.env.TIME_BONUS_RATE || 1
+      rate: process.env.TIME_BONUS_RATE || 200
     }
+  },
+  bonusSwitch: {
+    welcomeBonus: true,
+    timeBonus: true,
+    xemBonus: true
   }
 };
 
