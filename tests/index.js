@@ -40,15 +40,15 @@ describe('core/nem processor', function () {
 
     after(async () => {
       await deleteModels();
-    })
+    });
 
     it('test aggregate data base', async () => {
-      await Promise.delay(1000);
+      await Promise.delay(10000);
       let result = await aggregateModule();
       expect(result.depositSets).to.not.be.empty();
       expect(result.welcomeBonusSets).to.not.be.empty();
       expect(result.accounts).to.not.be.empty();
-    })
+    });
 
     it('test welcome bonus action', async () => {
       await Promise.delay(1000);
@@ -66,7 +66,7 @@ describe('core/nem processor', function () {
       await Promise.delay(1000);
       let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
       expect(result.code).to.be.equal(1);
-    })
+    });
 
     it('test account status', async () => {
       await Promise.delay(1000);

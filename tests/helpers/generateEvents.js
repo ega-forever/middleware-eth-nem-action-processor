@@ -10,7 +10,6 @@ const _ = require('lodash'),
 
 module.exports = async (account, provider) => {
   let contracts = {};
-  console.log('Path: ', config.smartContracts.path);
 
   if (fs.existsSync(config.smartContracts.path)) {
     contracts = requireAll({
@@ -35,9 +34,7 @@ module.exports = async (account, provider) => {
   let addressTimeHolder = await TimeHolderWalletInstance.address;
   let ERC20InterfaceInstance = await contracts.ERC20Interface.at(addressTime);
 
-  let result_hash = await UserManagerInstance.setOwnHash('hash', {from: account, gas:config.web3.gas});
-
-  let result_approve = await ERC20InterfaceInstance.approve(addressTimeHolder, 10, {from: account});
-
-  let result_deposit = await TimeHolderInstance.deposit(addressTime, 10, {from: account, gas: config.web3.gas});
-}
+  await UserManagerInstance.setOwnHash('hash', {from: account, gas:config.web3.gas});
+  await ERC20InterfaceInstance.approve(addressTimeHolder, 10, {from: account});
+  await TimeHolderInstance.deposit(addressTime, 10, {from: account, gas: config.web3.gas});
+};
