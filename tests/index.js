@@ -43,11 +43,11 @@ describe('core/nem processor', function () {
     });
 
     it('test aggregate data base', async () => {
-      await Promise.delay(10000);
-      let result = await aggregateModule();
-      expect(result.depositSets).to.not.be.empty();
-      expect(result.welcomeBonusSets).to.not.be.empty();
-      expect(result.accounts).to.not.be.empty();
+        await Promise.delay(15000);
+        let result = await aggregateModule();
+        expect(result.depositSets).to.not.be.empty();
+        expect(result.welcomeBonusSets).to.not.be.empty();
+        expect(result.accounts).to.not.be.empty();
     });
 
     it('test welcome bonus action', async () => {
@@ -73,4 +73,4 @@ describe('core/nem processor', function () {
       let result = await checkModel(accounts[0]);
       expect(result[0].welcomeBonusSent).to.be.equal(true);
     });
-})
+});
