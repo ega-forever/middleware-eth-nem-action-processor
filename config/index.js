@@ -31,17 +31,20 @@ const config = {
     network: process.env.NETWORK || 'development',
     uri: `${/^win/.test(process.platform) ? '\\\\.\\pipe\\' : ''}${process.env.WEB3_URI || `/tmp/${(process.env.NETWORK || 'development')}/geth.ipc`}`
   },
+  smartContracts: {
+    path: process.env.SMART_CONTRACTS_PATH || path.join(__dirname, '../node_modules/chronobank-smart-contracts/build/contracts')
+  },
   nem: {
     network: process.env.NEM_NETWORK ? parseInt(process.env.NEM_NETWORK) : -104,
     mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
     divisibillity: 100,
-    txFee: process.env.NEM_TX_FEE||100000,
-    host: process.env.NEM_HOST || 'http://192.3.61.243',
+    txFee: process.env.NEM_TX_FEE,
+    host: process.env.NEM_HOST || 'http://localhost',
     port: process.env.NEM_PORT || 7890,
-    privateKey: process.env.NEM_PRIVATE_KEY || 'ea05f57a790ed389feff0ae8a822b23101f0802fa175cd9efd4301d6b82ead74',
+    privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
     password: process.env.NEM_PASSWORD || '',
     actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
-      .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus'],
+      .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus', 'xemBonus'],
     welcomeBonus: {
       amount: 1
     },
