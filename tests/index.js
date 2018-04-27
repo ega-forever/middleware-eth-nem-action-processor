@@ -33,7 +33,7 @@ describe('core/nem processor', function () {
 
       accounts = await Promise.promisify(web3.eth.getAccounts)();
 
-      await generateSetHashEvents(accounts[0], provider);
+      await generateEvents(accounts[0], provider);
 
       await userRegistration(accounts[0]);
     })
@@ -50,21 +50,21 @@ describe('core/nem processor', function () {
       expect(result.accounts).to.not.be.empty();
     })
 
-    it('test welcome bonus action', async () => {
-      let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
-      expect(result.code).to.be.equal(1);
-    });
-
-    it('test time bonus action', async () => {
-      await Promise.delay(400);
-      let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
-      expect(result.code).to.be.equal(1);
-    });
-
-    it('test xem bonus action', async () => {
-      let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
-      expect(result.code).to.be.equal(1);
-    })
+    // it('test welcome bonus action', async () => {
+    //   let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
+    //   expect(result.code).to.be.equal(1);
+    // });
+    //
+    // it('test time bonus action', async () => {
+    //   await Promise.delay(400);
+    //   let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
+    //   expect(result.code).to.be.equal(1);
+    // });
+    //
+    // it('test xem bonus action', async () => {
+    //   let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
+    //   expect(result.code).to.be.equal(1);
+    // })
 
     it('test account status', async () => {
       await Promise.delay(400);

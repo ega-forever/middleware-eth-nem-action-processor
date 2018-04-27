@@ -1,6 +1,6 @@
 'use strict';
 
-const accountModel = require('../../models/accountModel');
+const accountModel = require('../../models/accountModel'),
      depositModel = require('./models/depositModel'),
      setHash = require('./models/setHashModel');
 
