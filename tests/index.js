@@ -34,8 +34,8 @@ describe('core/nem processor', function () {
 
       accounts = await Promise.promisify(web3.eth.getAccounts)();
 
-    //  await generateSetHashEvent(accounts[0], provider);
-      
+      //await generateSetHashEvent(accounts[0], provider);
+
     //  await generateDepositEvent(accounts[0], provider);
 
       await userRegistration(accounts[0]);
@@ -50,28 +50,28 @@ describe('core/nem processor', function () {
     //       let result = await aggregateModule();
     //       expect(result.depositSets).to.not.be.empty();
     //       expect(result.welcomeBonusSets).to.not.be.empty();
-    //       expect(result.accounts).to.not.be.empty(); 
+    //       expect(result.accounts).to.not.be.empty();
     // })
 
-    it('test welcome bonus action', async () => {
-      let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
-      expect(result.code).to.be.equal(1);
-    });
-
-    it('test time bonus action', async () => {
-      await Promise.delay(400);
-      let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
-      expect(result.code).to.be.equal(1);
-    });
+    // it('test welcome bonus action', async () => {
+    //   let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
+    //   expect(result.code).to.be.equal(1);
+    // });
+    //
+    // it('test time bonus action', async () => {
+    //   await Promise.delay(400);
+    //   let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
+    //   expect(result.code).to.be.equal(1);
+    // });
 
     // it('test xem bonus action', async () => {
     //   let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
     //   expect(result.code).to.be.equal(1);
     // })
 
-    // it('test account status', async () => {
-    //     await Promise.delay(400);
-    //     let result = await checkModel(accounts[0]);
-    //     expect(result[0].welcomeBonusSent).to.be.equal(true);
-    // });
+    it('test account status', async () => {
+        await Promise.delay(400);
+        let result = await checkModel(accounts[0]);
+        expect(result[0].welcomeBonusSent).to.be.equal(true);
+    });
 })

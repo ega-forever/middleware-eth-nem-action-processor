@@ -14,6 +14,7 @@ env:
     - NEM_ADDRESS='TADSJV736MEIBHTCRPY4GR6HONMYO2ROX423GJOD'
     - NEM_PASSWORD='Mixa_Bush1992'
     - NEM_MOSAIC_NAME='cb_test:minutest'
+    - SMART_CONTRACTS_PATH=$TRAVIS_BUILD_DIR/node_modules/chronobank-smart-contracts/build/contracts
 
 
 services:
