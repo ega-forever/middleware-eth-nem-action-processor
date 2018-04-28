@@ -5,7 +5,7 @@ const accountModel = require('../../models/accountModel'),
      setHash = require('./models/setHashModel');
 
 module.exports = async () => {
-    await accountModel.remove();
-    await depositModel.remove();
-    await setHash.remove();
+    await accountModel.remove().exec();
+    await depositModel.remove().exec();
+    await setHash.remove().exec();
 }

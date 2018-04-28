@@ -7,7 +7,6 @@ const _ = require('lodash'),
 
 module.exports = async () => {
     const accounts = await accountModel.find({nem: {$ne: null}});
-
     const filtered = await accountModel.aggregate([
       {
         $lookup: {

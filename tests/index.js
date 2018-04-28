@@ -16,7 +16,8 @@ const config = require('../config'),
   checkModel = require('./helpers/checkAccountModel'),
   userRegistration = require('./helpers/registrationUser'),
   generateEvents = require('./helpers/generateEvents'),
-  deleteModels = require('./helpers/deleteModels');
+  deleteModels = require('./helpers/deleteModels'),
+  checkBalanceUser = require('./helpers/checkBalanceUser');
 
 mongoose.Promise = Promise;
 mongoose.accounts = mongoose.createConnection(config.mongo.accounts.uri);
@@ -26,24 +27,21 @@ let accounts;
 describe('core/nem processor', function () {
 
     before(async () => {
-      const web3 = new Web3();
-      const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
-
-      web3.setProvider(provider);
-
-      accounts = await Promise.promisify(web3.eth.getAccounts)();
-
-      await generateEvents(accounts[0], provider);
-
-      await userRegistration(accounts[0]);
-    })
+        const web3 = new Web3();
+        const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
+        web3.setProvider(provider);
+        accounts = await Promise.promisify(web3.eth.getAccounts)();
+        await generateEvents(accounts[0], provider);
+        await userRegistration(accounts[0]);
+    });
 
     after(async () => {
       await deleteModels();
+      await mongoose.connection.close();
     });
 
     it('test aggregate data base', async () => {
-        await Promise.delay(15000);
+        await Promise.delay(60000);
         let result = await aggregateModule();
         expect(result.depositSets).to.not.be.empty();
         expect(result.welcomeBonusSets).to.not.be.empty();
@@ -52,25 +50,38 @@ describe('core/nem processor', function () {
 
     it('test welcome bonus action', async () => {
       await Promise.delay(1000);
+      let oldBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
       let result =  await welcomeBonus(accounts[0], valueConfig.amount, valueConfig.nem_address);
+
+      await Promise.delay(60000);
+      let newBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
+
       expect(result.code).to.be.equal(1);
+      expect(newBalance - oldBalance).to.be.equal(100);
     });
 
     it('test time bonus action', async () => {
       await Promise.delay(1000);
+      let oldBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
       let result = await timeBonus(accounts[0], valueConfig.currentAmount, valueConfig.depositMaxAmount, valueConfig.nem_address);
+
+      await Promise.delay(60000);
+      let newBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
+
       expect(result.code).to.be.equal(1);
+      expect(newBalance - oldBalance).to.be.equal(120);
     });
 
     it('test xem bonus action', async () => {
       await Promise.delay(1000);
+      let xemBalance = await checkBalanceUser.nemBalance(valueConfig.nem_address);
+      let oldBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
       let result = await xemBonus(valueConfig.nem_address, valueConfig.maxXemAmount, accounts[0]);
-      expect(result.code).to.be.equal(1);
-    });
 
-    it('test account status', async () => {
-      await Promise.delay(1000);
-      let result = await checkModel(accounts[0]);
-      expect(result[0].welcomeBonusSent).to.be.equal(true);
+      await Promise.delay(60000);
+      let newBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
+
+      expect(result.code).to.be.equal(1);
+      expect(newBalance - oldBalance).to.be.equal(xemBalance);
     });
 });
