@@ -13,7 +13,7 @@ module.exports = async (nemAddress, maxXemAmount) => {
   if(balance - maxXemAmount > 0) {
     const transferAmount = (balance - maxXemAmount) / (config.nem.xemBonus.xemDivisibility * config.nem.xemBonus.rate);
     const result = await nemServices.makeBonusTransfer(nemAddress, transferAmount, 'Xem Bonus');
-    await accountModel.updateMany({nem: nemAddress}, {$set: {maxXemAmount: balance}});
+    await accountModel.updateMany({nem: nemAddress}, {$set: {maxXemAmount: balance}, $inc: {transferLimit: 1}});
     return result;
   }
 };

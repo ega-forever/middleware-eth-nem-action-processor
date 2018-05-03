@@ -34,7 +34,8 @@ const Account = new mongoose.Schema({
   isActive: {type: Boolean, required: true, default: true},
   maxTimeDeposit: {type: mongoose.Schema.Types.Long, default: 0},
   welcomeBonusSent: {type: Boolean, default: false},
-  maxXemAmount: {type: mongoose.Schema.Types.Long, default: 0}
+  maxXemAmount: {type: mongoose.Schema.Types.Long, default: 0},
+  transferLimit: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model(`${config.mongo.accounts.collectionPrefix}Account`, Account);

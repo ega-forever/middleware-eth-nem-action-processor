@@ -60,6 +60,7 @@ module.exports = () => {
           deposit_count: {$size: '$deposit'},
           sethash: '$sethash',
           sethash_count: {$size: '$sethash'},
+          transferLimit: '$transferLimit',
           welcomeBonusSent: '$welcomeBonusSent',
           maxTimeDeposit: '$maxTimeDeposit',
           maxFoundDeposit: {$max: '$deposit.amount'},
@@ -81,9 +82,11 @@ module.exports = () => {
       }
     ]);
 
-    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent);
-    const depositSets = _.filter(filtered, item => !item.maxDepEq);
-    const xemSets = _.uniqBy(accounts, 'nem');
+    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent && item.transferLimit < config.nem.transferLimit);
+
+    const depositSets = _.filter(filtered, item => !item.maxDepEq && item.transferLimit < config.nem.transferLimit);
+
+    const xemSets = _.uniqBy(accounts, 'nem').filter(items => items.transferLimit < config.nem.transferLimit);
 
     let welcomeBonusResult;
     let depositBonusResult;
