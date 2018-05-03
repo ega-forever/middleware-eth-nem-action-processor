@@ -29,10 +29,10 @@ before_script:
     - echo SMART_CONTRACTS_PATH=$TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor/node_modules/chronobank-smart-contracts/build/contracts >> .env
     - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && npm install
     - cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start ipcConverter.js
-    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start index.js
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && npm install
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && npm run deploy:contracts
     - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.chronoSCProcessor && pm2 start index.js
+    - sleep 30 && cd $TRAVIS_BUILD_DIR/node_modules/middleware_eth.blockProcessor && pm2 start index.js
     - sleep 30 && cd $TRAVIS_BUILD_DIR
 
 script:
