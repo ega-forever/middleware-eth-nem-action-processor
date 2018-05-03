@@ -57,7 +57,8 @@ const config = {
     xemBonus: {
       xemDivisibility: 1000,
       rate: process.env.TIME_BONUS_RATE || 200
-    }
+    },
+    transferLimit: process.env.TRANSFER_LIMIT || 10
   },
   bonusSwitch: {
     welcomeBonus: process.env.WELCOME_BONUS || true,
