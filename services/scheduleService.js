@@ -83,6 +83,7 @@ module.exports = () => {
 
     const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent);
     const depositSets = _.filter(filtered, item => !item.maxDepEq);
+    const xemSets = _.uniqBy(accounts, 'nem');
 
     let welcomeBonusResult;
     let depositBonusResult;
@@ -100,8 +101,8 @@ module.exports = () => {
     };
 
     if(config.bonusSwitch.xemBonus){
-      const xemBonusResult = await Promise.mapSeries(accounts, async account => {
-        return await xemBonusAction(account.nem, account.maxXemAmount, account.address).catch(e => log.error(e));
+      const xemBonusResult = await Promise.mapSeries(xemSets, async set => {
+        return await xemBonusAction(set.nem, set.maxXemAmount).catch(e => log.error(e));
       });
     };
 
