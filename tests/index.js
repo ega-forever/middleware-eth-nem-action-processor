@@ -77,7 +77,7 @@ describe('core/nem processor', function () {
     });
 
     it('test check balance', async () => {
-        await Promise.delay(120000);
+        await Promise.delay(80000);
         let newBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
         let bonusTokens = xemBalance + valueConfig.bonusTimes;
         expect(newBalance - oldBalance).to.be.equal(bonusTokens);
