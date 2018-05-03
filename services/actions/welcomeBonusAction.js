@@ -15,7 +15,7 @@ module.exports = async (address, amount, nemAddress) => {
   log.info(`Running welcomeBonus ${address}`);
 
   let result = await nemServices.makeBonusTransfer(nemAddress, amount * config.nem.divisibillity, 'Welcome Bonus');
-  await accountModel.findOneAndUpdate({address: address}, {$set: {welcomeBonusSent: true}});
+  await accountModel.findOneAndUpdate({address: address}, {$set: {welcomeBonusSent: true}, $inc: {transferLimit: 1}});
   return result;
 
 };
