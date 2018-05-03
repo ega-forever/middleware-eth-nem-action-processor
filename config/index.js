@@ -60,9 +60,9 @@ const config = {
     }
   },
   bonusSwitch: {
-    welcomeBonus: true,
-    timeBonus: true,
-    xemBonus: true
+    welcomeBonus: process.env.WELCOME_BONUS || true,
+    timeBonus: process.env.TIME_BONUS || true,
+    xemBonus: process.env.XEM_BONUS || true
   }
 };
 
