@@ -19,6 +19,7 @@ const schedule = require('node-schedule'),
   Promise = require('bluebird'),
   welcomeBonusAction = require('./actions/welcomeBonusAction'),
   timeBonusAction = require('./actions/timeBonusAction'),
+  xemBonusAction = require('./actions/xemBonusAction'),
   log = bunyan.createLogger({name: 'plugins.nem_action_processor.scheduleService'});
 
 module.exports = () => {
@@ -34,17 +35,11 @@ module.exports = () => {
 
     log.info('sending bonuses...');
     const accounts = await accountModel.find({nem: {$ne: null}});
-    const filtered = await blockModel.aggregate([
-      {
-        $project: {
-          account: accounts
-        }
-      },
-      {$unwind: '$account'},
+    const filtered = await accountModel.aggregate([
       {
         $lookup: {
           from: 'sethashes',
-          localField: 'account.address',
+          localField: 'address',
           foreignField: 'key',
           as: 'sethash'
         }
@@ -52,26 +47,27 @@ module.exports = () => {
       {
         $lookup: {
           from: 'deposits',
-          localField: 'account.address',
+          localField: 'address',
           foreignField: 'who',
           as: 'deposit'
         }
       },
       {
         $project: {
-          address: '$account.address',
-          nem: '$account.nem',
+          address: '$address',
+          nem: '$nem',
           deposit: '$deposit',
           deposit_count: {$size: '$deposit'},
           sethash: '$sethash',
           sethash_count: {$size: '$sethash'},
-          welcomeBonusSent: '$account.welcomeBonusSent',
-          maxTimeDeposit: '$account.maxTimeDeposit',
+          transferLimit: '$transferLimit',
+          welcomeBonusSent: '$welcomeBonusSent',
+          maxTimeDeposit: '$maxTimeDeposit',
           maxFoundDeposit: {$max: '$deposit.amount'},
           maxDepEq: {
             $lte: [
               {$ifNull: [{$max: '$deposit.amount'}, 0]},
-              {$ifNull: [{$max: '$account.maxTimeDeposit'}, 0]}
+              {$ifNull: [{$max: '$maxTimeDeposit'}, 0]}
             ]
           }
         }
@@ -86,23 +82,39 @@ module.exports = () => {
       }
     ]);
 
-    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent);
-    const depositSets = _.filter(filtered, item => !item.maxDepEq);
+    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent && item.transferLimit < config.nem.transferLimit);
 
-    const welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
-      return await welcomeBonusAction(set.address, config.nem.welcomeBonus.amount, set.nem).catch(e => log.error(e));
-    });
+    const depositSets = _.filter(filtered, item => !item.maxDepEq && item.transferLimit < config.nem.transferLimit);
 
-    const depositBonusResult = await Promise.mapSeries(depositSets, async set => {
-      return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
-    });
+    const xemSets = _.uniqBy(accounts, 'nem').filter(items => items.transferLimit < config.nem.transferLimit);
+
+    let welcomeBonusResult;
+    let depositBonusResult;
+
+    if(config.bonusSwitch.welcomeBonus){
+        welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
+        return await welcomeBonusAction(set.address, config.nem.welcomeBonus.amount, set.nem).catch(e => log.error(e));
+      });
+    };
+
+    if(config.bonusSwitch.timeBonus){
+        depositBonusResult = await Promise.mapSeries(depositSets, async set => {
+        return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
+      });
+    };
+
+    if(config.bonusSwitch.xemBonus){
+      const xemBonusResult = await Promise.mapSeries(xemSets, async set => {
+        return await xemBonusAction(set.nem, set.maxXemAmount).catch(e => log.error(e));
+      });
+    };
 
     if (_.compact(welcomeBonusResult).length !== welcomeBonusSets.length ||
-      _.compact(depositBonusResult).length !== depositBonusResult.length) 
+      _.compact(depositBonusResult).length !== depositSets.length)
       log.info('some of binues hasn\'t been processed!');
-    else 
+    else
       log.info('bonuses has been sent!');
-    
+
 
     isPending = false;
 

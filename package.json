@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "node ./node_modules/eslint/bin/eslint.js -c .eslintrc.js --ext .js --fix --ignore-path .eslintignore .",
+    "deploy:contracts": "cd ./node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate",
     "test": "node ./node_modules/mocha/bin/mocha -t 90000 tests"
   },
   "repository": {
@@ -23,6 +24,7 @@
     "bunyan": "^1.8.12",
     "chronobank-smart-contracts": "1.1.*",
     "dotenv": "^4.0.0",
+    "expect.js": "^0.3.1",
     "lodash": "^4.17.4",
     "mongoose": "^4.13.4",
     "mongoose-long": "^0.1.1",
@@ -36,6 +38,8 @@
     "chai": "^4.1.2",
     "eslint": "^4.11.0",
     "eslint-plugin-chronobank": "github:chronobank/eslint-plugin-chronobank",
+    "middleware-eth-blockprocessor": "github:chronobank/middleware-eth-blockprocessor",
+    "middleware-eth-chrono-sc-processor": "github:chronobank/middleware-eth-chrono-sc-processor",
     "mocha": "^4.0.1"
   }
 }
