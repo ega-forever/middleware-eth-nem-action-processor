@@ -1,4 +1,8 @@
-'use strict';
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ * @author Egor Zuev <zyev.egor@gmail.com>
+ */
 
 require('dotenv/config');
 
@@ -73,7 +77,7 @@ describe('core/nem processor', function () {
     });
 
     it('test check balance', async () => {
-        await Promise.delay(60000);
+        await Promise.delay(80000);
         let newBalance = await checkBalanceUser.mosaicBalance(valueConfig.nem_address);
         let bonusTokens = xemBalance + valueConfig.bonusTimes;
         expect(newBalance - oldBalance).to.be.equal(bonusTokens);
