@@ -51,19 +51,19 @@ const config = {
       amount: 1
     },
     timeBonus: {
-      rate: process.env.NEM_BONUS_RATE || 60,
+      rate: parseInt(process.env.NEM_BONUS_RATE) || 60,
       timeDivisibility: 100000000 //1 time
     },
     xemBonus: {
-      xemDivisibility: 1000,
-      rate: process.env.TIME_BONUS_RATE || 200
+      xemDivisibility: 1000000, //1 xem
+      rate: parseInt(process.env.TIME_BONUS_RATE) || 200
     },
-    transferLimit: process.env.TRANSFER_LIMIT || 10
+    transferLimit: parseInt(process.env.TRANSFER_LIMIT) || 10
   },
   bonusSwitch: {
-    welcomeBonus: process.env.WELCOME_BONUS || true,
-    timeBonus: process.env.TIME_BONUS || true,
-    xemBonus: process.env.XEM_BONUS || true
+    welcomeBonus: process.env.WELCOME_BONUS ? !!parseInt(process.env.WELCOME_BONUS) : true,
+    timeBonus: process.env.TIME_BONUS ? !!parseInt(process.env.TIME_BONUS) : true,
+    xemBonus: process.env.XEM_BONUS ? !!parseInt(process.env.XEM_BONUS) : true
   }
 };
 
