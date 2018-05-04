@@ -25,6 +25,11 @@ const makeBonusTransfer = async (address, amount, message) => {
   // Create transfer object
   let transferTransaction = nem.model.objects.create('transferTransaction')(address, 1, message);
 
+  if (config.nem.cosigner) {
+    transferTransaction.isMultisig = true;
+    transferTransaction.multisigAccount = {publicKey: config.nem.cosigner};
+  }
+
   transferTransaction.mosaics.push(mosaicAttachment);
   const fullMosaicName = nem.utils.format.mosaicIdToName(mosaicAttachment.mosaicId);
 
@@ -41,8 +46,12 @@ const makeBonusTransfer = async (address, amount, message) => {
     .prepare('mosaicTransferTransaction')(common, transferTransaction, mosaicDefinitionMetaDataPair, config.nem.network);
 
   // Set the fee for transaction (increasing value makes transaction execution faster)
-  if (config.nem.txFee)
+  if (config.nem.txFee) {
     transactionEntity.fee = config.nem.txFee;
+
+    if (config.nem.cosigner)
+      transactionEntity.otherTrans.fee = config.nem.txFee;
+  }
 
   let result = await Promise.resolve(nem.model.transactions.send(common, transactionEntity, endpoint)).timeout(2000);
   if (!_.has(result, 'code') || ![0, 1].includes(result.code))

@@ -40,11 +40,11 @@ const config = {
     network: process.env.NEM_NETWORK ? parseInt(process.env.NEM_NETWORK) : -104,
     mosaic: process.env.NEM_MOSAIC_NAME || 'cb:minutes',
     divisibillity: 100,
-    txFee: process.env.NEM_TX_FEE,
+    txFee: parseInt(process.env.NEM_TX_FEE) || null,
     host: process.env.NEM_HOST || 'http://localhost',
     port: process.env.NEM_PORT || 7890,
     privateKey: process.env.NEM_PRIVATE_KEY || 'secret_key',
-    password: process.env.NEM_PASSWORD || '',
+    cosigner: process.env.COSIGNER_PUB_KEY || 'pub key',
     actions: process.env.NEM_ACTIONS ? _.chain(process.env.NEM_ACTIONS)
       .split(',').defaults([]).value() : ['welcomeBonus', 'timeBonus', 'xemBonus'],
     welcomeBonus: {
