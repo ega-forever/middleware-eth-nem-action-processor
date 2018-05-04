@@ -13,9 +13,11 @@ const config = require('../../config'),
 module.exports = async (account, provider) => {
   let contracts = {};
 
-  if (fs.existsSync(config.smartContracts.path))
+  let relativePath = path.join(__dirname, '../../', config.smartContracts.path);
+
+  if (fs.existsSync(config.smartContracts.path) || fs.existsSync(relativePath))
     contracts = requireAll({
-      dirname: path.join(__dirname, '../../', config.smartContracts.path),
+      dirname: fs.existsSync(relativePath) ? path.join(__dirname, '../../', config.smartContracts.path) : config.smartContracts.path,
       filter: /(^((ChronoBankPlatformEmitter)|(?!(Emitter)).)*)\.json$/,
       resolve: Contract => contract(Contract)
     });
