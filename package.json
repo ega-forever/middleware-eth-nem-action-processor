@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/algebris/middleware-eth-nem-action-processor.git"
+    "url": "git+https://github.com/chronobank/middleware-eth-nem-action-processor.git"
   },
   "author": "chronobank",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/algebris/middleware-eth-nem-action-processor/issues"
+    "url": "https://github.com/chronobank/middleware-eth-nem-action-processor/issues"
   },
-  "homepage": "https://github.com/algebris/middleware-eth-nem-action-processor#readme",
+  "homepage": "https://github.com/chronobank/middleware-eth-nem-action-processor#readme",
   "dependencies": {
     "amqplib": "^0.5.2",
     "bignumber.js": "^4.1.0",
