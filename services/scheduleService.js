@@ -24,10 +24,8 @@ const schedule = require('node-schedule'),
 module.exports = () => {
 
   let isPending = false;
-  let rule = new schedule.RecurrenceRule();
-  _.merge(rule, config.schedule.job);
 
-  schedule.scheduleJob(rule, async () => {
+  schedule.scheduleJob(config.schedule.job, async () => {
 
     if (isPending)
       return log.info('still sending bonuses...');
