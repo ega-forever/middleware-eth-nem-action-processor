@@ -26,7 +26,7 @@ const config = {
     }
   },
   schedule: {
-    job: process.env.SCHEDULE_NEM_JOB || '30 * * * * *'
+    job: process.env.SCHEDULE_NEM_JOB || '*/5 * * * *'
   },
   web3: {
     network: process.env.NETWORK || 'development',
