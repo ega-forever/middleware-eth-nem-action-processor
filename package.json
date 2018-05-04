@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/algebris/middleware-eth-nem-action-processor.git"
+    "url": "git+https://github.com/chronobank/middleware-eth-nem-action-processor.git"
   },
   "author": "chronobank",
   "license": "AGPL-3.0",

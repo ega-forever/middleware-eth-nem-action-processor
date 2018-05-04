@@ -30,16 +30,14 @@ mongoose.connect(config.mongo.data.uri, {useMongoClient: true});
 
 const web3 = new Web3();
 const provider = new Web3.providers.IpcProvider(config.web3.uri, net);
-let accounts,
-  oldBalance,
-  xemBalance;
+let accounts;
 
 describe('core/nem processor', function () {
 
   before(async () => {
     web3.setProvider(provider);
     accounts = await Promise.promisify(web3.eth.getAccounts)();
-    //await generateEvents(accounts[0], provider);
+    await generateEvents(accounts[0], provider);
 
     const keyPair = nem.crypto.keyPair.create(config.nem.privateKey);
     const address = nem.model.address.toAddress(keyPair.publicKey.toString(), config.nem.network);
@@ -50,9 +48,6 @@ describe('core/nem processor', function () {
     };
 
     await accountModel.findOneAndUpdate({address: query.address}, query, {upsert: true});
-
-    oldBalance = await nemUserApi.getMosaicBalance(address);
-    xemBalance = await nemUserApi.getNemBalance(address);
   });
 
   after(async () => {
@@ -63,41 +58,41 @@ describe('core/nem processor', function () {
     await web3.currentProvider.connection.end();
   });
 
-  /*  it('test aggregate data base', async () => {
-   await Promise.delay(60000);
-   let result = await aggregateModule();
-   expect(result.depositSets.length).to.be.above(0);
-   expect(result.welcomeBonusSets.length).to.be.above(0);
-   expect(result.accounts.length).to.be.above(0);
-   });*/
+  it('test aggregate data base', async () => {
+    await Promise.delay(60000);
+    let result = await aggregateModule();
+    expect(result.depositSets.length).to.be.above(0);
+    expect(result.welcomeBonusSets.length).to.be.above(0);
+    expect(result.accounts.length).to.be.above(0);
+  });
 
-  /*  it('test welcome bonus action', async () => {
-   await Promise.delay(1000);
+  it('test welcome bonus action', async () => {
+    await Promise.delay(1000);
 
-   const keyPair = nem.crypto.keyPair.create(config.nem.privateKey);
-   const address = nem.model.address.toAddress(keyPair.publicKey.toString(), config.nem.network);
-   let result = await welcomeBonus(accounts[0], 1, address);
-   expect(result.code).to.be.equal(1);
-   await Promise.delay(60000);
-   const tx = await nemUserApi.getTx(result.transactionHash.data);
-   const mosaic = _.get(tx, 'mosaics.0') || _.get(tx, 'otherTrans.mosaics.0');
-   expect(mosaic.quantity / 100).to.be.equal(1);
-   });*/
+    const keyPair = nem.crypto.keyPair.create(config.nem.privateKey);
+    const address = nem.model.address.toAddress(keyPair.publicKey.toString(), config.nem.network);
+    let result = await welcomeBonus(accounts[0], 1, address);
+    expect(result.code).to.be.equal(1);
+    await Promise.delay(60000);
+    const tx = await nemUserApi.getTx(result.transactionHash.data);
+    const mosaic = _.get(tx, 'mosaics.0') || _.get(tx, 'otherTrans.mosaics.0');
+    expect(mosaic.quantity / 100).to.be.equal(1);
+  });
 
-  /*  it('test time bonus action', async () => {
-   await Promise.delay(60000 * 2);
+  it('test time bonus action', async () => {
+    await Promise.delay(60000 * 2);
 
-   const keyPair = nem.crypto.keyPair.create(config.nem.privateKey);
-   const address = nem.model.address.toAddress(keyPair.publicKey.toString(), config.nem.network);
-   const currentBonus = 15 * Math.pow(10, 6);
-   const maxPrevBonus = 10 * Math.pow(10, 6);
-   let result = await timeBonus(accounts[0], maxPrevBonus, currentBonus, address);
-   expect(result.code).to.be.equal(1);
-   await Promise.delay(60000);
-   const tx = await nemUserApi.getTx(result.transactionHash.data);
-   const mosaic = _.get(tx, 'mosaics.0') || _.get(tx, 'otherTrans.mosaics.0');
-   expect(mosaic.quantity / 100).to.be.equal((currentBonus - maxPrevBonus) / config.nem.timeBonus.timeDivisibility * config.nem.timeBonus.rate);
-   });*/
+    const keyPair = nem.crypto.keyPair.create(config.nem.privateKey);
+    const address = nem.model.address.toAddress(keyPair.publicKey.toString(), config.nem.network);
+    const currentBonus = 15 * Math.pow(10, 6);
+    const maxPrevBonus = 10 * Math.pow(10, 6);
+    let result = await timeBonus(accounts[0], maxPrevBonus, currentBonus, address);
+    expect(result.code).to.be.equal(1);
+    await Promise.delay(60000);
+    const tx = await nemUserApi.getTx(result.transactionHash.data);
+    const mosaic = _.get(tx, 'mosaics.0') || _.get(tx, 'otherTrans.mosaics.0');
+    expect(mosaic.quantity / 100).to.be.equal((currentBonus - maxPrevBonus) / config.nem.timeBonus.timeDivisibility * config.nem.timeBonus.rate);
+  });
 
   it('test xem bonus action', async () => {
     await Promise.delay(1000);
