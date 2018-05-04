@@ -12,7 +12,6 @@
 
 const schedule = require('node-schedule'),
   accountModel = require('../models/accountModel'),
-  blockModel = require('../models/blockModel'),
   _ = require('lodash'),
   bunyan = require('bunyan'),
   config = require('../config'),
@@ -83,38 +82,34 @@ module.exports = () => {
     ]);
 
     const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent && item.transferLimit < config.nem.transferLimit);
-
     const depositSets = _.filter(filtered, item => !item.maxDepEq && item.transferLimit < config.nem.transferLimit);
-
     const xemSets = _.uniqBy(accounts, 'nem').filter(items => items.transferLimit < config.nem.transferLimit);
 
-    let welcomeBonusResult;
-    let depositBonusResult;
+    let welcomeBonusResult,
+      depositBonusResult,
+      xemBonusResult;
 
-    if(config.bonusSwitch.welcomeBonus){
-        welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
+    if (config.bonusSwitch.welcomeBonus)
+      welcomeBonusResult = await Promise.mapSeries(welcomeBonusSets, async set => {
         return await welcomeBonusAction(set.address, config.nem.welcomeBonus.amount, set.nem).catch(e => log.error(e));
       });
-    };
 
-    if(config.bonusSwitch.timeBonus){
-        depositBonusResult = await Promise.mapSeries(depositSets, async set => {
+    if (config.bonusSwitch.timeBonus)
+      depositBonusResult = await Promise.mapSeries(depositSets, async set => {
         return await timeBonusAction(set.address, set.maxTimeDeposit, set.maxFoundDeposit, set.nem).catch(e => log.error(e));
       });
-    };
 
-    if(config.bonusSwitch.xemBonus){
-      const xemBonusResult = await Promise.mapSeries(xemSets, async set => {
+    if (config.bonusSwitch.xemBonus)
+      xemBonusResult = await Promise.mapSeries(xemSets, async set => {
         return await xemBonusAction(set.nem, set.maxXemAmount).catch(e => log.error(e));
       });
-    };
 
     if (_.compact(welcomeBonusResult).length !== welcomeBonusSets.length ||
-      _.compact(depositBonusResult).length !== depositSets.length)
-      log.info('some of binues hasn\'t been processed!');
+      _.compact(depositBonusResult).length !== depositSets.length ||
+      _.compact(xemBonusResult).length !== xemSets.length)
+      log.info('some of bonues hasn\'t been processed!');
     else
       log.info('bonuses has been sent!');
-
 
     isPending = false;
 
