@@ -79,9 +79,9 @@ module.exports = () => {
       }
     ]);
 
-    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent && item.transferLimit < config.nem.transferLimit);
-    const depositSets = _.filter(filtered, item => !item.maxDepEq && item.transferLimit < config.nem.transferLimit);
-    const xemSets = _.uniqBy(accounts, 'nem').filter(items => items.transferLimit < config.nem.transferLimit);
+    const welcomeBonusSets = _.filter(filtered, item => !item.welcomeBonusSent && (item.transferLimit || 0) < config.nem.transferLimit);
+    const depositSets = _.filter(filtered, item => !item.maxDepEq && (item.transferLimit || 0) < config.nem.transferLimit);
+    const xemSets = _.uniqBy(accounts, 'nem').filter(item => (item.transferLimit || 0) < config.nem.transferLimit);
 
     let welcomeBonusResult,
       depositBonusResult,
