@@ -22,5 +22,5 @@ RUN mkdir src && cd src && \
     middleware-eth-nem-action-processor"#$RELEASE" \
     middleware-eth-2fa"#$RELEASE" \
     middleware-eth-sidechain"#$RELEASE"
-EXPOSE 8080
+EXPOSE 8080 8081 8082
 CMD pm2-docker start /mnt/config/${NETWORK_TYPE}/ecosystem.config.js
