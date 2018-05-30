@@ -30,6 +30,7 @@ module.exports = () => {
     if (isPending)
       return log.info('still sending bonuses...');
 
+    isPending = true;
     log.info('sending bonuses...');
     const accounts = await accountModel.find({nem: {$ne: null}});
     const filtered = await accountModel.aggregate([

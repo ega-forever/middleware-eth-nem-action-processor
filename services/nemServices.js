@@ -7,6 +7,7 @@
 const nem = require('nem-sdk').default,
   Promise = require('bluebird'),
   _ = require('lodash'),
+  request = require('request-promise'),
   config = require('../config');
 
 const makeBonusTransfer = async (address, amount, message) => {
@@ -66,7 +67,25 @@ const getNemBalance = async (address) => {
   return nemAccount.account.balance;
 };
 
+const getHistoricalBalance = async (address, start, end) => {
+
+  const endpoint = nem.model.objects.create('endpoint')(config.nem.host, config.nem.port);
+
+  // Configure the request
+  const options = {
+    url: nem.utils.helpers.formatEndpoint(endpoint) + `/account/historical/get?address=${address}&startHeight=${start}&endHeight=${end}&increment=1000`,
+    json: true
+  };
+
+  let response = await request(options);
+
+  // Send the request
+  return response.data;
+
+};
+
 module.exports = {
   makeBonusTransfer,
-  getNemBalance
+  getNemBalance,
+  getHistoricalBalance
 };
