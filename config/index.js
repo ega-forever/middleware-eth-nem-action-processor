@@ -56,7 +56,11 @@ const config = {
     },
     xemBonus: {
       xemDivisibility: 1000000, //1 xem
-      rate: parseInt(process.env.TIME_BONUS_RATE) || 200
+      rate: parseInt(process.env.TIME_BONUS_RATE) || 200,
+      window: {
+        start: parseInt(process.env.XEM_BONUS_WINDOW_START),
+        end:  parseInt(process.env.XEM_BONUS_WINDOW_END)
+      }
     },
     transferLimit: parseInt(process.env.TRANSFER_LIMIT) || 10
   },
